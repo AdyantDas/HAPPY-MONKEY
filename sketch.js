@@ -8,6 +8,7 @@ var PLAY= 1;
 var gameState= PLAY;
 var END= 0;
 var roof;
+var backgroundImage,backgroundg;
 function preload(){
   
   
@@ -17,31 +18,49 @@ function preload(){
   
   bananaImage = loadImage("banana.png");
   obstacleImage = loadImage("obstacle.png");
- 
+ backgroundImage = loadImage("jungle.jpg");
 }
 
 
 
 function setup() {
-  createCanvas=(400,400);
+  createCanvas=(windowWidth,windowHeight);
    
  FoodGroup = new Group();
  obstacleGroup = new Group();
-  
-  
+   
+backgroundg=createSprite(200,200,10,10);
+  backgroundg.addImage(backgroundImage);
+    
+   backgroundg.velocityX = -3 
+
+    if (backgroundg.x < 0){
+      backgroundg.x = backgroundg.width/2;
+    }
   monkey=createSprite(80,315,20,20);
   monkey.addAnimation("moving", monkey_running);
   monkey.scale=0.1;
 
  roof=createSprite(200,50,400,5);
+
   
 }
 
 
 function draw() {
-background("lightblue");
+ background(225);
+  
   if(gameState==PLAY){
-   
+    
+     backgroundg.velocityX = -3 
+
+    if (backgroundg.x < 0){
+      backgroundg.x = backgroundg.width/2;
+    }
+         
+    
+   monkey.visible=true; 
+    backgroundg.visible=true;
   
   if(keyDown("space")){
     monkey.velocityY = -12;
@@ -52,29 +71,32 @@ background("lightblue");
   stroke("white");
   textSize(20);
   fill("white");
-  text("score = "+ score,400,50)
+  text("score = "+ score,100,50)
   
   stroke("black");
   textSize(20);
   fill("black");
   survivalTime=Math.ceil(frameCount/frameRate());
-  text("survival time = "+ survivalTime,100,50)
+  text("survival time = "+ survivalTime,400,50)
      Banana();
   Obstacles();
     if( FoodGroup.isTouching(monkey)){
        FoodGroup.destroyEach();
+      score=score+1;
        
     }
     if(obstacleGroup.isTouching(monkey)){
        gameState=END;
 }
+    
 }  else if(gameState==END){
     if(keyDown("space")){
     monkey.velocityY = 0;
     
   }
-  monkey.visble=false;
-  ground.visble=false;
+  monkey.visible=false;
+  ground.visible=false;
+  backgroundg.visible=false;
   
   text("YOU LOSE! 'SPACE' TO RESTART THE GAME", 0,200);
     ground.VelocityX=0;
@@ -91,10 +113,17 @@ background("lightblue");
   ground.velocityX=-4;
   ground.x=ground.width/2;
 
+   
+    
+  
+  ground.visible=false;
   roof.visible=false;
   monkey.bounceOff(roof)
  
   monkey.collide(ground);
+  
+  
+  
   drawSprites();
 }
 function Banana(){
